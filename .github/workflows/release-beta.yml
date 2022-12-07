@@ -28,11 +28,13 @@ jobs:
       - name: Install packages
         run: yarn install --frozen-lockfile
 
-      - name: Generate changelog
+      - name: Set commiter identity
         run: |
           git config --global user.name '${{ github.actor }}'
           git config --global user.email '${{ github.actor }}@users.noreply.github.com'
-          yarn run standard-version
+
+      - name: Generate changelog
+        run: yarn run standard-version
 
       - name: Get release version
         id: 'release-version'
