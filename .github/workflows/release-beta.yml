@@ -7,6 +7,10 @@ defaults:
   run:
     working-directory: nestjs
 
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   release-candidate:
     runs-on: ubuntu-latest
@@ -15,11 +19,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'yarn'
+          cache-dependency-path: nestjs/yarn.lock
+
       - name: Install packages
         run: yarn install --frozen-lockfile
 
       - name: Generate changelog
-        run: yarn run standard-version
+        run: |
+          git config --global user.name '${{ github.actor }}'
+          git config --global user.email '${{ github.actor }}@users.noreply.github.com'
+          yarn run standard-version
 
       - name: Get release version
         id: 'release-version'
