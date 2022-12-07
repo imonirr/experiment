@@ -1,0 +1,23 @@
+name: Release (beta)
+
+on:
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: nestjs
+
+jobs:
+  release-candidate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install packages
+        run: yarn install --frozen-lockfile
+
+      - name: Generate changelog
+        run: yarn run standard-version
+
